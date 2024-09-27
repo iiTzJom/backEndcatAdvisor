@@ -1,11 +1,12 @@
 const { db } = require("../../config");
-const { set, ref, get } = require("firebase/database");
+const { set, ref, get, update } = require("firebase/database");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
 const createUser = (req, res) => {
   const saltRounds = 10;
+  const id = uuidv4();
   get(ref(db, "user/" + req.body.userName)).then((data) => {
     if (data.exists()) {
       return res.status(200).json({
@@ -23,7 +24,7 @@ const createUser = (req, res) => {
         } else {
           try {
             set(ref(db, "user/" + req.body.userName), {
-              id: uuidv4(),
+              id: id,
               firstName: req.body.firstName,
               lastName: req.body.lastName,
               userName: req.body.userName,
@@ -45,8 +46,10 @@ const createUser = (req, res) => {
                   to: req.body.email,
                   subject: "Please confirm your membership registration.",
                   html:
-                    "<h1>Please confirm your membership registration Please   <a href='http://localhost:3001/confirmUser?" +
+                    "<h1>Please confirm your membership registration Please   <a href='http://localhost:3000/confirmUser?" +
                     req.body.userName +
+                    "%2f" +
+                    id +
                     "'>link</a> to complete your membership registration. </h1>",
                 });
                 console.log("info---------Email", info);
@@ -73,25 +76,25 @@ const createUser = (req, res) => {
   });
 };
 
-const getUser = (req, res) => {
+const login = (req, res) => {
   try {
-    get(ref(db, "user/" + req.body.userName)).then((data) => {
+    get(ref(db, "user/" + req.query.userName)).then((data) => {
       if (data.exists()) {
         bcrypt.compare(
-          req.body.password + "catAdvisor",
+          req.query.password + "catAdvisor",
           data.val().password,
           function (err, result) {
             if (result === true) {
               if (data.val().confirm === 0) {
                 return res.status(200).json({
                   code: 200,
-                  message: "please confirm user from your E-mail",
+                  message: "please vertify user from your E-mail",
                   data: null,
                 });
               } else {
                 return res.status(200).json({
                   code: 200,
-                  message: "get success",
+                  message: "login success",
                   data: data.val(),
                 });
               }
@@ -107,7 +110,7 @@ const getUser = (req, res) => {
       } else {
         return res.status(200).json({
           code: 200,
-          message: "get not found",
+          message: "user not found",
           data: null,
         });
       }
@@ -120,9 +123,59 @@ const getUser = (req, res) => {
   }
 };
 
-const confirmUser = (req, res) => {};
+const checkDataConfirmUser = (req, res) => {
+  get(ref(db, "user/" + req.query.userName)).then((data) => {
+    if (data.exists()) {
+      const dataReturn = data.val();
+      if (req.query.id !== dataReturn.id) {
+        return res.status(200).json({
+          code: 400,
+          message: "fail",
+          data: null,
+        });
+      } else {
+        if (dataReturn.confirm == 0) {
+          return res.status(200).json({
+            code: 200,
+            message: "correct",
+            data: null,
+          });
+        } else {
+          return res.status(200).json({
+            code: 200,
+            message: "success",
+            data: null,
+          });
+        }
+      }
+    }
+  });
+};
+
+const confirmUser = (req, res) => {
+  var updates = {};
+  updates[`user/${req.body.userName}/confirm`] = 1;
+
+  update(ref(db), updates)
+    .then((data) => {
+      return res.status(200).json({
+        code: 200,
+        message: "Update Success",
+        data: null,
+      });
+    })
+    .catch((err) => {
+      return res.status(err.code).json({
+        code: err.code,
+        message: err.message,
+        data: null,
+      });
+    });
+};
 
 module.exports = {
   createUser,
-  getUser,
+  login,
+  confirmUser,
+  checkDataConfirmUser,
 };

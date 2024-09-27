@@ -8,10 +8,12 @@ const bodyParser = require("body-parser");
 const appExperss = express();
 appExperss.use(bodyParser.json());
 appExperss.use(bodyParser.urlencoded({ extended: true }));
+appExperss.use(express.json());
 appExperss.use(
   cors({
-    origin: "http://localhost:3000",
-    methods: "GET,POST,PUT,DELETE",
+    origin: "*", // อนุญาตเฉพาะ React app ที่รันบน localhost:3000
+    methods: ["GET", "POST", "PUT", "DELETE"], // ระบุวิธีที่อนุญาต
+    //allowedHeaders: ["Content-Type", "Authorization"], // ระบุ headers ที่อนุญาต
   })
 );
 

@@ -1,5 +1,10 @@
 const { createCat } = require("./catData/createCatData");
-const { createUser, getUser } = require("./auth");
+const {
+  createUser,
+  login,
+  confirmUser,
+  checkDataConfirmUser,
+} = require("./auth");
 var express = require("express");
 var router = express.Router();
 
@@ -7,6 +12,7 @@ var router = express.Router();
 
 router.post("/createCatdata", createCat);
 router.post("/createUser", createUser);
-router.get("/getUser", getUser);
-
+router.get("/getUser", login);
+router.put("/confirmUser", confirmUser);
+router.get("/checkDataConfirmUser", checkDataConfirmUser);
 module.exports = router;
