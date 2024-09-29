@@ -32,6 +32,7 @@ const createUser = (req, res) => {
               type: 2,
               password: hash,
               confirm: 0,
+              imgProfile: "",
             })
               .then(async (data) => {
                 let transporter = nodemailer.createTransport({
@@ -39,6 +40,9 @@ const createUser = (req, res) => {
                   auth: {
                     user: "catadvisorpj@gmail.com",
                     pass: "iffv vyfu ynsg qjjq",
+                  },
+                  tls: {
+                    rejectUnauthorized: false,
                   },
                 });
                 let info = await transporter.sendMail({
@@ -52,7 +56,7 @@ const createUser = (req, res) => {
                     id +
                     "'>link</a> to complete your membership registration. </h1>",
                 });
-                console.log("info---------Email", info);
+
                 return res.status(200).json({
                   code: 200,
                   message: "create success",

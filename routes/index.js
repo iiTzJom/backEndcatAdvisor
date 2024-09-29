@@ -10,7 +10,7 @@ var router = express.Router();
 
 /* GET home page. */
 
-router.post("/createCatdata", createCat);
+// router.post("/createCatdata", createCat);
 router.post("/createUser", createUser);
 router.get("/getUser", login);
 router.put("/confirmUser", confirmUser);
