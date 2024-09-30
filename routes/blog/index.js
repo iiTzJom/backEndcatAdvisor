@@ -50,7 +50,6 @@ const getListBlog = (req, res) => {
 };
 
 const deleteBlog = (req, res) => {
-  console.log(req.query);
   remove(ref(db, "blogs/" + req.query.id)).then((data) => {
     try {
       return res.status(200).json({
