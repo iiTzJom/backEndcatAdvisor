@@ -3,8 +3,6 @@ const { set, ref } = require("firebase/database");
 const { v4: uuidv4 } = require("uuid");
 
 function createCat(req, res) {
-  console.log("uuid", uuidv4());
-
   try {
     set(ref(db, "user/" + uuidv4()), {
       id: uuidv4(),
@@ -17,7 +15,6 @@ function createCat(req, res) {
       message: "create success",
     });
   } catch (err) {
-    console.log("errrrrrr", err);
     return res.status(500).json({
       code: 500,
       message: err.message,

@@ -4,8 +4,18 @@ const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "catadvisorpj@gmail.com",
+    pass: "iffv vyfu ynsg qjjq",
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
+const saltRounds = 10;
 const createUser = (req, res) => {
-  const saltRounds = 10;
   const id = uuidv4();
   get(ref(db, "user/" + req.body.userName)).then((data) => {
     if (data.exists()) {
@@ -35,16 +45,6 @@ const createUser = (req, res) => {
               imgProfile: "",
             })
               .then(async (data) => {
-                let transporter = nodemailer.createTransport({
-                  service: "gmail",
-                  auth: {
-                    user: "catadvisorpj@gmail.com",
-                    pass: "iffv vyfu ynsg qjjq",
-                  },
-                  tls: {
-                    rejectUnauthorized: false,
-                  },
-                });
                 let info = await transporter.sendMail({
                   from: '"Cat Advisor" <catadvisor@gmail.com>',
                   to: req.body.email,
@@ -177,9 +177,61 @@ const confirmUser = (req, res) => {
     });
 };
 
+const checkUsernameResetPassword = (req, res) => {
+  get(ref(db, "user/" + req.query.userName)).then(async (data) => {
+    if (data.exists()) {
+      let info = await transporter.sendMail({
+        from: '"Cat Advisor" <catadvisor@gmail.com>',
+        to: data.val().email,
+        subject: "Reset password.",
+        html:
+          "<h1>Please click <a href='http://localhost:3000/resetPassword?" +
+          data.val().userName +
+          "%2f" +
+          data.val().id +
+          "'>link</a>for reset password </h1>",
+      });
+      return res.status(200).json({
+        code: 200,
+        message: "success",
+        data: null,
+      });
+    } else {
+      return res.status(200).json({
+        code: 200,
+        message: "user not found",
+        data: null,
+      });
+    }
+  });
+};
+
+const updatePassword = (req, res) => {
+  bcrypt.hash(req.body.password + "catAdvisor", saltRounds, (err, hash) => {
+    var updatePassword = {};
+    updatePassword[`user/${req.body.userName}/password`] = hash;
+    update(ref(db), updatePassword)
+      .then((data) => {
+        return res.status(200).json({
+          code: 200,
+          message: "Update Success",
+          data: null,
+        });
+      })
+      .catch((err) => {
+        return res.status(err.code).json({
+          code: err.code,
+          message: err.message,
+          data: null,
+        });
+      });
+  });
+};
 module.exports = {
   createUser,
   login,
   confirmUser,
   checkDataConfirmUser,
+  checkUsernameResetPassword,
+  updatePassword,
 };
