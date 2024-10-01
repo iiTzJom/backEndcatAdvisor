@@ -1,5 +1,11 @@
 const { createCat } = require("./catData/createCatData");
-const { createBlog, getListBlog, deleteBlog } = require("./blog");
+const {
+  createBlog,
+  getListBlog,
+  deleteBlog,
+  getBlogDetail,
+  updateBlogDetail,
+} = require("./blog");
 const {
   createUser,
   login,
@@ -24,4 +30,6 @@ router.put("/updatePassword", updatePassword);
 router.post("/createBlog", createBlog);
 router.get("/getBlogList", getListBlog);
 router.delete("/deleteBlog", deleteBlog);
+router.get("/getBlogDetail", getBlogDetail);
+router.put("/updateBlogDetail", updateBlogDetail);
 module.exports = router;
