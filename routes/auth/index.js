@@ -177,6 +177,23 @@ const confirmUser = (req, res) => {
     });
 };
 
+const getProfile = (req, res) => {
+  get(ref(db, "user/" + req.query.userName)).then(async (data) => {
+    if (data.exists()) {
+      return res.status(200).json({
+        code: 200,
+        message: "success",
+        data: data.val(),
+      });
+    } else {
+      return res.status(200).json({
+        code: 200,
+        message: "user not found",
+        data: null,
+      });
+    }
+  });
+};
 const checkUsernameResetPassword = (req, res) => {
   get(ref(db, "user/" + req.query.userName)).then(async (data) => {
     if (data.exists()) {
@@ -227,6 +244,30 @@ const updatePassword = (req, res) => {
       });
   });
 };
+
+const updateProfile = (req, res) => {
+  var updates = {};
+  updates[`user/${req.body.userName}/firstName`] = req.body.firstName;
+  updates[`user/${req.body.userName}/lastName`] = req.body.lastName;
+  updates[`user/${req.body.userName}/imgProfile`] = req.body.imgProfile;
+  updates[`user/${req.body.userName}/updateDate`] = new Date();
+
+  update(ref(db), updates)
+    .then((data) => {
+      return res.status(200).json({
+        code: 200,
+        message: "Update Success",
+        data: null,
+      });
+    })
+    .catch((err) => {
+      return res.status(err.code).json({
+        code: err.code,
+        message: err.message,
+        data: null,
+      });
+    });
+};
 module.exports = {
   createUser,
   login,
@@ -234,4 +275,6 @@ module.exports = {
   checkDataConfirmUser,
   checkUsernameResetPassword,
   updatePassword,
+  updateProfile,
+  getProfile,
 };

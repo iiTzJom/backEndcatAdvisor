@@ -14,7 +14,7 @@ const createBlog = (req, res) => {
     description: req.body.description,
     createBy: req.body.createBy,
     updateBy: "",
-    createDate: req.body.createDate,
+    createDate: new Date(),
     updateDate: "",
   })
     .then(async (data) => {
