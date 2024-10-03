@@ -2,16 +2,15 @@ const { db } = require("../../config");
 const { set, ref, get, update, remove } = require("firebase/database");
 const { v4: uuidv4 } = require("uuid");
 
-const createCatData = (req, res) => {
+const createCatNote = (req, res) => {
   const id = uuidv4();
 
-  set(ref(db, "users/catData/" + req.body.createBy + "/" + id), {
+  set(ref(db, "users/catNote/" + req.body.createBy + "/" + id), {
     id: id,
-    imgCat: req.body.imgCat,
-    genderCat: req.body.genderCat,
-    birthDateCat: req.body.birthDateCat,
-    nameCat: req.body.nameCat,
-    breedCat: req.body.breedCat,
+    idCat: req.body.idCat,
+    nameNote: req.body.nameNote,
+    noteDate: req.body.noteDate,
+    text: req.body.text,
     createBy: req.body.createBy,
     createDate: new Date(),
   })
@@ -29,8 +28,8 @@ const createCatData = (req, res) => {
     });
 };
 
-const getCatByUser = (req, res) => {
-  get(ref(db, "users/catData/" + req.query.userName)).then(async (data) => {
+const getCatNoteByUser = (req, res) => {
+  get(ref(db, "users/catNote/" + req.query.userName)).then(async (data) => {
     if (data.exists()) {
       return res.status(200).json({
         code: 200,
@@ -46,9 +45,10 @@ const getCatByUser = (req, res) => {
     }
   });
 };
-const deleteCat = (req, res) => {
+
+const deleteCatNote = (req, res) => {
   remove(
-    ref(db, "users/catData/" + req.query.userName + "/" + req.query.id)
+    ref(db, "users/catNote/" + req.query.userName + "/" + req.query.id)
   ).then((data) => {
     try {
       return res.status(200).json({
@@ -65,28 +65,23 @@ const deleteCat = (req, res) => {
   });
 };
 
-const updateCatByUser = (req, res) => {
+const updateCatNote = (req, res) => {
   var updates = {};
+  updates[`users/catNote/` + req.body.updateBy + "/" + req.body.id + "/idCat"] =
+    req.body.idCat;
   updates[
-    `users/catData/` + req.body.updateBy + "/" + req.body.id + "/imgCat"
-  ] = req.body.imgCat;
+    `users/catNote/` + req.body.updateBy + "/" + req.body.id + "/nameNote"
+  ] = req.body.nameNote;
   updates[
-    `users/catData/` + req.body.updateBy + "/" + req.body.id + "/genderCat"
-  ] = req.body.genderCat;
+    `users/catNote/` + req.body.updateBy + "/" + req.body.id + "/noteDate"
+  ] = req.body.noteDate;
+  updates[`users/catNote/` + req.body.updateBy + "/" + req.body.id + "/text"] =
+    req.body.text;
   updates[
-    `users/catData/` + req.body.updateBy + "/" + req.body.id + "/birthDateCat"
-  ] = req.body.birthDateCat;
-  updates[
-    `users/catData/` + req.body.updateBy + "/" + req.body.id + "/nameCat"
-  ] = req.body.nameCat;
-  updates[
-    `users/catData/` + req.body.updateBy + "/" + req.body.id + "/breedCat"
-  ] = req.body.breedCat;
-  updates[
-    `users/catData/` + req.body.updateBy + "/" + req.body.id + "/updateBy"
+    `users/catNote/` + req.body.updateBy + "/" + req.body.id + "/updateBy"
   ] = req.body.updateBy;
   updates[
-    `users/catData/` + req.body.updateBy + "/" + req.body.id + "/updateDate"
+    `users/catNote/` + req.body.updateBy + "/" + req.body.id + "/updateDate"
   ] = new Date();
 
   update(ref(db), updates)
@@ -107,8 +102,8 @@ const updateCatByUser = (req, res) => {
 };
 
 module.exports = {
-  createCatData,
-  getCatByUser,
-  deleteCat,
-  updateCatByUser,
+  createCatNote,
+  getCatNoteByUser,
+  deleteCatNote,
+  updateCatNote,
 };

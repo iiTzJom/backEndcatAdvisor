@@ -17,7 +17,19 @@ const {
   getProfile,
 } = require("./auth");
 
-const { createCatData, getCatByUser, deleteCat } = require("./user/catData");
+const {
+  createCatData,
+  getCatByUser,
+  deleteCat,
+  updateCatByUser,
+} = require("./user/catData");
+
+const {
+  createCatNote,
+  getCatNoteByUser,
+  deleteCatNote,
+  updateCatNote,
+} = require("./user/noteCat");
 
 var express = require("express");
 var router = express.Router();
@@ -43,5 +55,15 @@ router.put("/updateBlogDetail", updateBlogDetail);
 router.post("/createCatData", createCatData);
 router.get("/getCatByUser", getCatByUser);
 router.delete("/deleteCatByUser", deleteCat);
+router.put("/updateCatByUser", updateCatByUser);
+
+router.post("/createCatNote", createCatNote);
+router.get("/getCatNoteByUser", getCatNoteByUser);
+router.delete("/deleteCatNote", deleteCatNote);
+router.put("/updateCatNote", updateCatNote);
+
+// router.get("/getCatByUser", getCatByUser);
+// router.delete("/deleteCatByUser", deleteCat);
+// router.put("/updateCatByUser", updateCatByUser);
 
 module.exports = router;

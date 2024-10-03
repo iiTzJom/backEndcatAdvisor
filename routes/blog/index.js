@@ -13,9 +13,7 @@ const createBlog = (req, res) => {
     recommend: req.body.recommend,
     description: req.body.description,
     createBy: req.body.createBy,
-    updateBy: "",
     createDate: new Date(),
-    updateDate: "",
   })
     .then(async (data) => {
       return res.status(200).json({

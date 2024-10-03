@@ -42,7 +42,6 @@ const createUser = (req, res) => {
               type: 2,
               password: hash,
               confirm: 0,
-              imgProfile: "",
             })
               .then(async (data) => {
                 let info = await transporter.sendMail({
