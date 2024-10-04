@@ -1,4 +1,10 @@
-const { createCat } = require("./catData/createCatData");
+const {
+  createCatBreedData,
+  getListCatBreeds,
+  deleteCatBreeds,
+  getCatBreedsDetail,
+  updateCatBreeds,
+} = require("./catData");
 const {
   createBlog,
   getListBlog,
@@ -62,8 +68,10 @@ router.get("/getCatNoteByUser", getCatNoteByUser);
 router.delete("/deleteCatNote", deleteCatNote);
 router.put("/updateCatNote", updateCatNote);
 
-// router.get("/getCatByUser", getCatByUser);
-// router.delete("/deleteCatByUser", deleteCat);
-// router.put("/updateCatByUser", updateCatByUser);
+router.post("/createCatBreedData", createCatBreedData);
+router.get("/getListCatBreeds", getListCatBreeds);
+router.delete("/deleteCatBreeds", deleteCatBreeds);
+router.put("/updateCatBreeds", updateCatBreeds);
+router.get("/getCatBreedsDetail", getCatBreedsDetail);
 
 module.exports = router;
