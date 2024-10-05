@@ -4,6 +4,7 @@ const {
   deleteCatBreeds,
   getCatBreedsDetail,
   updateCatBreeds,
+  getCatUser,
 } = require("./catData");
 const {
   createBlog,
@@ -36,6 +37,17 @@ const {
   deleteCatNote,
   updateCatNote,
 } = require("./user/noteCat");
+
+const {
+  sendLineNotification,
+  updateTokken,
+  createVacine,
+  createVacineNoti,
+  getVacineByUser,
+  deleteVacine,
+  updateVacine,
+  getVacineList,
+} = require("./user/vacine");
 
 var express = require("express");
 var router = express.Router();
@@ -73,5 +85,15 @@ router.get("/getListCatBreeds", getListCatBreeds);
 router.delete("/deleteCatBreeds", deleteCatBreeds);
 router.put("/updateCatBreeds", updateCatBreeds);
 router.get("/getCatBreedsDetail", getCatBreedsDetail);
+router.get("/getCatUser", getCatUser);
+
+router.post("/sendLineNotification", sendLineNotification);
+router.put("/updateTokken", updateTokken);
+router.post("/createVacine", createVacine);
+router.post("/createVacineNoti", createVacineNoti);
+router.get("/getVacineByUser", getVacineByUser);
+router.delete("/deleteVacine", deleteVacine);
+router.put("/updateVacine", updateVacine);
+router.get("/getVacineList", getVacineList);
 
 module.exports = router;
