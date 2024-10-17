@@ -46,6 +46,45 @@ const getCatByUser = (req, res) => {
     }
   });
 };
+
+const getCatById = (req, res) => {
+  get(ref(db, "users/catData/" + req.query.userName + "/" + req.query.id)).then(
+    async (data) => {
+      if (data.exists()) {
+        return res.status(200).json({
+          code: 200,
+          message: "success",
+          data: data.val(),
+        });
+      } else {
+        return res.status(200).json({
+          code: 200,
+          message: "user not found",
+          data: null,
+        });
+      }
+    }
+  );
+};
+
+const getCatAllUser = (req, res) => {
+  get(ref(db, "users/catData")).then(async (data) => {
+    if (data.exists()) {
+      return res.status(200).json({
+        code: 200,
+        message: "success",
+        data: data.val(),
+      });
+    } else {
+      return res.status(200).json({
+        code: 200,
+        message: "user not found",
+        data: null,
+      });
+    }
+  });
+};
+
 const deleteCat = (req, res) => {
   remove(
     ref(db, "users/catData/" + req.query.userName + "/" + req.query.id)
@@ -111,4 +150,6 @@ module.exports = {
   getCatByUser,
   deleteCat,
   updateCatByUser,
+  getCatAllUser,
+  getCatById,
 };

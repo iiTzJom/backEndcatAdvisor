@@ -27,8 +27,10 @@ const {
 const {
   createCatData,
   getCatByUser,
+  getCatById,
   deleteCat,
   updateCatByUser,
+  getCatAllUser,
 } = require("./user/catData");
 
 const {
@@ -47,6 +49,9 @@ const {
   deleteVacine,
   updateVacine,
   getVacineList,
+  getVaccineHistory,
+  getVacineCatList,
+  getVaccineProgram,
 } = require("./user/vacine");
 
 var express = require("express");
@@ -72,8 +77,11 @@ router.put("/updateBlogDetail", updateBlogDetail);
 
 router.post("/createCatData", createCatData);
 router.get("/getCatByUser", getCatByUser);
+router.get("/getCatById", getCatById);
+
 router.delete("/deleteCatByUser", deleteCat);
 router.put("/updateCatByUser", updateCatByUser);
+router.get("/getalluser", getCatAllUser);
 
 router.post("/createCatNote", createCatNote);
 router.get("/getCatNoteByUser", getCatNoteByUser);
@@ -95,5 +103,8 @@ router.get("/getVacineByUser", getVacineByUser);
 router.delete("/deleteVacine", deleteVacine);
 router.put("/updateVacine", updateVacine);
 router.get("/getVacineList", getVacineList);
+router.get("/getVacineCatList", getVacineCatList);
+router.get("/getVaccineHistory", getVaccineHistory);
+router.get("/getVaccineProgram", getVaccineProgram);
 
 module.exports = router;

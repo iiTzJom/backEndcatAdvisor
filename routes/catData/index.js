@@ -2,8 +2,6 @@ const { db } = require("../../config");
 const { set, ref, get, remove, update } = require("firebase/database");
 const { v4: uuidv4 } = require("uuid");
 
-// mQOsCqDrJi8GcKHd1SeogF2c2y2pCT1Sb6X2jbEn7IQ;
-// X2MEGeIzBMPLnpCai3lYux6cUakDDwcZ6a2rtylWpex;
 const createCatBreedData = (req, res) => {
   const id = uuidv4();
 

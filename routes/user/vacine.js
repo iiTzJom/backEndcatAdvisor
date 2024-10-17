@@ -2,7 +2,37 @@ const { db } = require("../../config");
 const { set, ref, get, update, remove } = require("firebase/database");
 const { v4: uuidv4 } = require("uuid");
 const axios = require("axios");
+const schedule = require("node-schedule");
 
+const scheduleNotificationDaily = (accessToken, message) => {
+  const notificationRule = new schedule.RecurrenceRule();
+  notificationRule.hour = 8;
+  notificationRule.minute = 0;
+
+  schedule.scheduleJob(notificationRule, function () {
+    axios
+      .post(
+        "https://notify-api.line.me/api/notify",
+        new URLSearchParams({
+          message: message,
+        }),
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      )
+      .then((data) => {
+        console.log("Notification sent successfully at 8 AM");
+      })
+      .catch((err) => {
+        console.log("Error sending notification:", err.message);
+      });
+  });
+};
+
+// ฟังก์ชันส่งแจ้งเตือนผ่าน LINE
 const sendLineNotification = (req, res) => {
   axios
     .post(
@@ -77,9 +107,6 @@ const updateVacine = async (req, res) => {
   updates[
     `users/vacine/` + req.body.updateBy + "/" + req.body.id + "/vacineDateNext"
   ] = req.body.vacineDateNext;
-  updates[
-    `users/vacine/` + req.body.updateBy + "/" + req.body.id + "/vacineDateNext"
-  ] = req.body.vacineDateNext;
   updates[`users/vacine/` + req.body.updateBy + "/" + req.body.id + "/status"] =
     req.body.status;
   updates[
@@ -129,8 +156,63 @@ const updateVacine = async (req, res) => {
       });
     });
 };
+
 const getVacineByUser = (req, res) => {
   get(ref(db, "users/vacine/" + req.query.userName)).then(async (data) => {
+    if (data.exists()) {
+      return res.status(200).json({
+        code: 200,
+        message: "success",
+        data: data.val(),
+      });
+    } else {
+      return res.status(200).json({
+        code: 200,
+        message: "user not found",
+        data: null,
+      });
+    }
+  });
+};
+
+const getVacineCatList = (req, res) => {
+  get(ref(db, "users/vacine/idCat" + req.query.userName)).then(async (data) => {
+    if (data.exists()) {
+      return res.status(200).json({
+        code: 200,
+        message: "success",
+        data: data.val(),
+      });
+    } else {
+      return res.status(200).json({
+        code: 200,
+        message: "user not found",
+        data: null,
+      });
+    }
+  });
+};
+
+const getVaccineProgram = (req, res) => {
+  get(ref(db, "users/vacine/idCat" + req.query.userName)).then(async (data) => {
+    if (data.exists()) {
+      return res.status(200).json({
+        code: 200,
+        message: "success",
+        data: data.val(),
+      });
+    } else {
+      return res.status(200).json({
+        code: 200,
+        message: "user not found",
+        data: null,
+      });
+    }
+  });
+};
+
+const getVaccineHistory = (req, res) => {
+  get(ref(db, "vacineNoti/")).then(async (data) => {
     if (data.exists()) {
       return res.status(200).json({
         code: 200,
@@ -178,6 +260,11 @@ const createVacineNoti = (req, res) => {
     createDate: new Date(),
   })
     .then(async (data) => {
+      scheduleNotificationDaily(
+        req.body.accessToken,
+        `วัคซีนวันนี้: ${req.body.vacineName}`
+      );
+
       return res.status(200).json({
         code: 200,
         message: "create success",
@@ -227,7 +314,7 @@ const updateTokken = (req, res) => {
     .then((data) => {
       return res.status(200).json({
         code: 200,
-        message: "Update Success",
+        message: "success",
         data: null,
       });
     })
@@ -242,11 +329,14 @@ const updateTokken = (req, res) => {
 
 module.exports = {
   sendLineNotification,
-  updateTokken,
   createVacine,
-  createVacineNoti,
-  getVacineByUser,
-  deleteVacine,
   updateVacine,
+  getVacineByUser,
   getVacineList,
+  createVacineNoti,
+  deleteVacine,
+  updateTokken,
+  getVaccineHistory,
+  getVacineCatList,
+  getVaccineProgram,
 };
